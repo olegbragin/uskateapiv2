@@ -38,7 +38,7 @@ struct ChargeHistoryItemTests: EntityTestable {
     @Test("Creating charge history item")
     func testCreateChargeHistoryItem() async throws {
         try await withApp { app in
-            var chargeStationID: Int?
+            var chargeStation: ChargeStationDTO?
             try await createEntity(
                 with: app, 
                 apiEntityPath: "api/chargestations", 
@@ -61,12 +61,12 @@ struct ChargeHistoryItemTests: EntityTestable {
                         )]
                     )
                 }, 
-                completion: { chargeStation in
-                    chargeStationID = chargeStation.id
+                completion: { newChargeStation in
+                    chargeStation = newChargeStation
                 }
             )
-            #expect(chargeStationID != nil)
-            guard let chargeStationID = chargeStationID else { return }
+            #expect(chargeStation != nil)
+            guard let chargeStation = chargeStation else { return }
             var chargeHistoryItemID: Int? 
             try await createEntity(
                 with: app, 
@@ -77,7 +77,7 @@ struct ChargeHistoryItemTests: EntityTestable {
                         duration: 34, 
                         chargingSpeed: 34, 
                         totalCost: 45644.7,
-                        chargeStationId: chargeStationID
+                        chargeStation: chargeStation
                     )
                 }, 
                 completion: { chargeHistoryItem in
@@ -88,14 +88,15 @@ struct ChargeHistoryItemTests: EntityTestable {
             #expect(chargeHistoryItemID != nil)
             guard let chargeHistoryItemID = chargeHistoryItemID else { return }
             try await deleteEntity(with: app, andEntityID: chargeHistoryItemID)
+            guard let chargeStationID = chargeStation.id else { return }
             try await deleteEntity(with: app, apiEntityPath: "api/chargestations", andEntityID: chargeStationID)
         }
     }
 
     @Test("Updating charge history item")
     func testUpdateUnattachedCharger() async throws {
-            try await withApp { app in
-            var chargeStationID: Int?
+        try await withApp { app in
+            var chargeStation: ChargeStationDTO?
             try await createEntity(
                 with: app, 
                 apiEntityPath: "api/chargestations", 
@@ -118,12 +119,12 @@ struct ChargeHistoryItemTests: EntityTestable {
                         )]
                     )
                 }, 
-                completion: { chargeStation in
-                    chargeStationID = chargeStation.id
+                completion: { newChargeStation in
+                    chargeStation = newChargeStation
                 }
             )
-            #expect(chargeStationID != nil)
-            guard let chargeStationID = chargeStationID else { return }
+            #expect(chargeStation != nil)
+            guard let chargeStation = chargeStation else { return }
             var chargeHistoryItemID: Int? 
             try await createEntity(
                 with: app, 
@@ -134,7 +135,7 @@ struct ChargeHistoryItemTests: EntityTestable {
                         duration: 34, 
                         chargingSpeed: 34, 
                         totalCost: 45644.7,
-                        chargeStationId: chargeStationID
+                        chargeStation: chargeStation
                     )
                 },
                 completion: { chargeHistoryItem in
@@ -151,7 +152,7 @@ struct ChargeHistoryItemTests: EntityTestable {
                         duration: 34, 
                         chargingSpeed: 34, 
                         totalCost: 45644.7,
-                        chargeStationId: 1
+                        chargeStation: chargeStation
                     )
                     try req.content.encode(updatedChargeHistoryItem)
                 }, 
@@ -162,6 +163,7 @@ struct ChargeHistoryItemTests: EntityTestable {
                 }
             )
             try await deleteEntity(with: app, andEntityID: chargeHistoryItemID)
+            guard let chargeStationID = chargeStation.id else { return }
             try await deleteEntity(with: app, apiEntityPath: "api/chargestations", andEntityID: chargeStationID)
         }
     }

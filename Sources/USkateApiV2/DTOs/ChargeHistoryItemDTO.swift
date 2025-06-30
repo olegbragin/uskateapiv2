@@ -8,5 +8,5 @@ struct ChargeHistoryItemDTO: Content {
     var duration: Int
     var chargingSpeed: Int
     var totalCost: Decimal
-    var chargeStationId: ChargeStation.IDValue?
+    var chargeStation: ChargeStationDTO?
 }

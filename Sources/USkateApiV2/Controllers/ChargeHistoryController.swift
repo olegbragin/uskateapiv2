@@ -20,16 +20,44 @@ struct ChargeHistoryController: RouteCollection {
 
     func index(req: Request) async throws -> [ChargeHistoryItemDTO] {
         let chargeHistory = try await ChargeHistoryItem.query(on: req.db).all()
-        return chargeHistory.map {
-            ChargeHistoryItemDTO(
-                chargeDate: $0.chargeDate, 
-                energyDelivered: $0.energyDelivered, 
-                duration: $0.duration, 
-                chargingSpeed: $0.chargingSpeed, 
-                totalCost: $0.totalCost,
-                chargeStationId: $0.$chargeStation.id
+        var result = [ChargeHistoryItemDTO]()
+        for chargeHistoryItem in chargeHistory {
+            let chargeStation = try await chargeHistoryItem.$chargeStation.get(on: req.db)
+            let chargers = try await chargeStation?.$chargers.get(on: req.db).map { charger in
+                ChargerDTO(
+                    id: charger.id,
+                    plug: charger.plug, 
+                    state: charger.state, 
+                    price: charger.price
+                )
+            }
+            result.append(
+                ChargeHistoryItemDTO(
+                    chargeDate: chargeHistoryItem.chargeDate, 
+                    energyDelivered: chargeHistoryItem.energyDelivered, 
+                    duration: chargeHistoryItem.duration, 
+                    chargingSpeed: chargeHistoryItem.chargingSpeed, 
+                    totalCost: chargeHistoryItem.totalCost,
+                    chargeStation: chargeStation.map {
+                        ChargeStationDTO(
+                            id: $0.id, 
+                            latitude: $0.latitude, 
+                            longitude: $0.longitude, 
+                            title: $0.title, 
+                            subtitle: $0.subtitle, 
+                            imageSrc: $0.imageSrc, 
+                            phone: $0.phone, 
+                            workTime: $0.workTime, 
+                            parking: $0.parking, 
+                            rating: $0.rating, 
+                            isFavorite: $0.isFavorite, 
+                            chargers: chargers
+                        )
+                    }
+                )
             )
         }
+        return result
     }
 
     func create(req: Request) async throws -> ChargeHistoryItemDTO {
@@ -40,7 +68,7 @@ struct ChargeHistoryController: RouteCollection {
             duration: chargeHistoryItemDTO.duration, 
             chargingSpeed: chargeHistoryItemDTO.chargingSpeed, 
             totalCost: chargeHistoryItemDTO.totalCost,
-            chargeStationID: chargeHistoryItemDTO.chargeStationId
+            chargeStationID: chargeHistoryItemDTO.chargeStation?.id
         )        
         try await chargeHistoryItem.save(on: req.db)
         chargeHistoryItemDTO.id = chargeHistoryItem.id
@@ -58,7 +86,7 @@ struct ChargeHistoryController: RouteCollection {
         chargeHistoryItem.duration = chargeHistoryItemDTO.duration
         chargeHistoryItem.chargingSpeed = chargeHistoryItemDTO.chargingSpeed
         chargeHistoryItem.totalCost = chargeHistoryItemDTO.totalCost
-        chargeHistoryItem.$chargeStation.id = chargeHistoryItemDTO.chargeStationId
+        chargeHistoryItem.$chargeStation.id = chargeHistoryItemDTO.chargeStation?.id
         
         try await chargeHistoryItem.update(on: req.db)
         return chargeHistoryItemDTO
