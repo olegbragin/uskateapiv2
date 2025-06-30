@@ -1,0 +1,40 @@
+{
+  "configurations": [
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:USkateApiV2}",
+      "name": "Debug USkateApiV2",
+      "program": "${workspaceFolder:USkateApiV2}/.build/debug/USkateApiV2",
+      "preLaunchTask": "swift: Build Debug USkateApiV2"
+    },
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:USkateApiV2}",
+      "name": "Release USkateApiV2",
+      "program": "${workspaceFolder:USkateApiV2}/.build/release/USkateApiV2",
+      "preLaunchTask": "swift: Build Release USkateApiV2"
+    },
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:USkateApiV2}",
+      "name": "Debug USkateApi",
+      "program": "${workspaceFolder:USkateApiV2}/.build/debug/USkateApi",
+      "preLaunchTask": "swift: Build Debug USkateApi"
+    },
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:USkateApiV2}",
+      "name": "Release USkateApi",
+      "program": "${workspaceFolder:USkateApiV2}/.build/release/USkateApi",
+      "preLaunchTask": "swift: Build Release USkateApi"
+    }
+  ]
+}

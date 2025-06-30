@@ -1,0 +1,21 @@
+server {
+    server_name sharenergy.online;
+    root /home/vapor/Hello/Public/;
+
+    listen 8080;
+
+    # Serve all public/static files via nginx and then fallback to Vapor for the rest
+    location / {
+        try_files $uri @proxy;
+    }
+
+    location @proxy {
+        proxy_pass http://179.61.132.91:8080;
+        proxy_pass_header Server;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_connect_timeout 3s;
+        proxy_read_timeout 10s;
+    }
+}

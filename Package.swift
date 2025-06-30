@@ -4,17 +4,14 @@ import PackageDescription
 let package = Package(
     name: "USkateApiV2",
     platforms: [
-       .macOS(.v13)
+       .macOS(.v13),
     ],
     dependencies: [
-        // 💧 A server-side Swift web framework.
         .package(url: "https://github.com/vapor/vapor.git", from: "4.110.1"),
-        // 🗄 An ORM for SQL and NoSQL databases.
         .package(url: "https://github.com/vapor/fluent.git", from: "4.9.0"),
-        // 🐘 Fluent driver for Postgres.
         .package(url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.8.0"),
-        // 🔵 Non-blocking, event-driven networking for Swift. Used for custom executors
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.65.0"),
+        .package(url: "https://github.com/dankinsoid/VaporToOpenAPI.git", from: "4.7.1")
     ],
     targets: [
         .executableTarget(
@@ -25,6 +22,7 @@ let package = Package(
                 .product(name: "Vapor", package: "vapor"),
                 .product(name: "NIOCore", package: "swift-nio"),
                 .product(name: "NIOPosix", package: "swift-nio"),
+                .product(name: "VaporToOpenAPI", package: "VaporToOpenAPI")
             ],
             swiftSettings: swiftSettings
         ),
@@ -41,4 +39,8 @@ let package = Package(
 
 var swiftSettings: [SwiftSetting] { [
     .enableUpcomingFeature("ExistentialAny"),
+    // Enable better optimizations when building in Release configuration. Despite the use of
+    // the `.unsafeFlags` construct required by SwiftPM, this flag is recommended for Release
+    // builds. See <https://github.com/swift-server/guides/blob/main/docs/building.md#building-for-production> for details.
+    .unsafeFlags(["-cross-module-optimization"], .when(configuration: .release))
 ] }
