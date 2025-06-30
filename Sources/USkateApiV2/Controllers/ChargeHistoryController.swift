@@ -33,6 +33,7 @@ struct ChargeHistoryController: RouteCollection {
             }
             result.append(
                 ChargeHistoryItemDTO(
+                    id: chargeHistoryItem.id,
                     chargeDate: chargeHistoryItem.chargeDate, 
                     energyDelivered: chargeHistoryItem.energyDelivered, 
                     duration: chargeHistoryItem.duration, 

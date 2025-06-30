@@ -51,8 +51,8 @@ struct ChargeStationController: RouteCollection {
     func create(req: Request) async throws -> ChargeStationDTO {
         var chargeStationDTO = try req.content.decode(ChargeStationDTO.self)
         let chargeStation = ChargeStation()
-        chargeStation.latitude = chargeStationDTO.latitude
-        chargeStation.longitude = chargeStationDTO.longitude
+        chargeStation.latitude = chargeStationDTO.latitude ?? 0.0
+        chargeStation.longitude = chargeStationDTO.longitude ?? 0.0
         chargeStation.title = chargeStationDTO.title
         chargeStation.subtitle = chargeStationDTO.subtitle
         chargeStation.imageSrc = chargeStationDTO.imageSrc
@@ -73,8 +73,8 @@ struct ChargeStationController: RouteCollection {
         }
 
         let chargeStationDTO = try req.content.decode(ChargeStationDTO.self)
-        chargeStation.latitude = chargeStationDTO.latitude
-        chargeStation.longitude = chargeStationDTO.longitude
+        chargeStation.latitude = chargeStationDTO.latitude ?? 0.0
+        chargeStation.longitude = chargeStationDTO.longitude ?? 0.0
         chargeStation.title = chargeStationDTO.title
         chargeStation.subtitle = chargeStationDTO.subtitle
         chargeStation.imageSrc = chargeStationDTO.imageSrc
