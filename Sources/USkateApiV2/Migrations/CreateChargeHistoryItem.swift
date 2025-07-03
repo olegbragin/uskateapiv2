@@ -10,7 +10,6 @@ struct CreateChargeHistoryItem: AsyncMigration {
             .field("chargingSpeed", .int, .required)
             .field("totalCost", .sql(unsafeRaw: "NUMERIC(7,2)"), .required)
             .field("chargestation_id", .int, .foreignKey("chargestation", .key(.id), onDelete: .noAction, onUpdate: .setNull))
-            .unique(on: "chargestation_id")
             .create()
     }
 

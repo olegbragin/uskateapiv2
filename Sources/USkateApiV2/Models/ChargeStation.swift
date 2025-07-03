@@ -40,6 +40,9 @@ final class ChargeStation: Model, @unchecked Sendable {
     @Children(for: \.$chargeStation)
     var chargers: [Charger]
 
+    @Children(for: \.$chargeStation)
+    var chargeHistory: [ChargeHistoryItem]
+
     init() { }
 
     init(
